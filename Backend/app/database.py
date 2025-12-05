@@ -6,5 +6,5 @@ load_dotenv()
 
 MONGO_URL = os.getenv("MONGO_URL")
 client = MongoClient(MONGO_URL)
-db = client["finance_traker"]
+db = client["finance_db"]
 user_collection = db["users"]
