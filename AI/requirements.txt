@@ -1,0 +1,17 @@
+scikit-learn
+pytesseract
+Pillow
+numpy
+opencv-python
+fastapi
+uvicorn
+regex
+flask
+langchain
+langchain-groq
+langchain-community
+langchain-core
+dotenv
+uvicorn
+twilio
+python-multipart
