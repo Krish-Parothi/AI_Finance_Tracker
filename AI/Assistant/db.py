@@ -9,5 +9,5 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 
 client = MongoClient(MONGO_URI)
-db = client["finance_ai"]
+db = client["finance_db"]
 expenses_collection = db["expenses"]
