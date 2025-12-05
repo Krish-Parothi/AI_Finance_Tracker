@@ -7,8 +7,8 @@ import os
 
 # ---------- CONFIG ----------
 MONGO_URI = os.getenv("MONGO_URI")
-DB_NAME = "finance_tracker"
-COLLECTION_NAME = "user_expenses"
+DB_NAME = "finance_db"
+COLLECTION_NAME = "users"
 
 
 class DBWriter:
