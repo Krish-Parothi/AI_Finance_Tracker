@@ -5,6 +5,7 @@ from app.middleware.error_handler import register_exception_handlers
 from app.routers import auth, expenses, analytics, llm
 from Autocategorization import auth_ai
 
+
 app = FastAPI()
 
 app.add_middleware(

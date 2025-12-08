@@ -1,5 +1,5 @@
 # app/routers/auth.py
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from app.schemas.auth_schemas import SignupSchema, LoginSchema, TokenOut
 from app.db import users
 from app.utils.hashing import hash_password, verify_password
@@ -30,15 +30,28 @@ def signup(data: SignupSchema):
     return success("signup_ok", {"user_id": str(inserted.inserted_id)})
 
 @router.post("/login", response_model=TokenOut)
-def login(data: LoginSchema):
+def login(data: LoginSchema, response: Response):
     user = users.find_one({"email": data.email})
     if not user or not verify_password(data.password, user["password"]):
         return error("invalid_credentials")
+    
     uid = str(user["_id"])
+    access_token = create_access_token(uid)
+    refresh_token = create_refresh_token(uid)
+    
+    # Set HttpOnly cookie
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=False,  # True if HTTPS
+        samesite="lax"
+    )
+    
     return {
         "user_id": uid,
-        "access_token": create_access_token(uid),
-        "refresh_token": create_refresh_token(uid),
+        "access_token": access_token,
+        "refresh_token": refresh_token,
         "public_code": user["public_code"],
     }
 

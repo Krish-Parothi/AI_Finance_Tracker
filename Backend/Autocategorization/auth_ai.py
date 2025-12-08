@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Response, Depends, HTTPException
+from fastapi import APIRouter, Response, Depends, HTTPException, Request
 from pydantic import BaseModel
 import jwt, os
 from datetime import datetime, timedelta
-from llm import LLMExtractor
-from db import DBWriter
+from Autocategorization.llm import LLMExtractor
+from Autocategorization.db import DBWriter
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
 SECRET = os.getenv("JWT_SECRET")
@@ -22,13 +25,25 @@ def create_token(data, minutes=60):
     payload["exp"] = datetime.utcnow() + timedelta(minutes=minutes)
     return jwt.encode(payload, SECRET, algorithm="HS256")
 
-def get_current_user(token: str = Depends(lambda req: req.cookies.get("access_token"))):
+# def get_current_user(token: str = Depends(lambda req: req.cookies.get("access_token"))):
+#     if not token:
+#         raise HTTPException(401, "Not authenticated")
+#     try:
+#         return jwt.decode(token, SECRET, algorithms=["HS256"])
+#     except:
+#         raise HTTPException(401, "Invalid token")
+
+from fastapi import Request, HTTPException
+
+def get_current_user(req: Request):
+    token = req.cookies.get("access_token")
     if not token:
         raise HTTPException(401, "Not authenticated")
     try:
-        return jwt.decode(token, SECRET, algorithms=["HS256"])
+        return jwt.decode(token, SECRET, algorithms=[os.getenv("JWT_ALGORITHM")])
     except:
         raise HTTPException(401, "Invalid token")
+
 
 @router.post("/login")
 def login(req: LoginReq, response: Response):
