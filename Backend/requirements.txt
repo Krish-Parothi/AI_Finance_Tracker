@@ -13,3 +13,10 @@ langchain-groq
 pydantic
 pydantic[email]
 dotenv
+scikit-learn
+numpy
+regex
+flask
+twilio
+python-multipart
+motor
